@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Collections.Generic;
+using AveneoRerutacja.KeyGenerator;
 
 namespace AveneoRekrutacja.Tests
 {
@@ -17,7 +18,7 @@ namespace AveneoRekrutacja.Tests
         {
             var key = new AuthenticationKey();
 
-            Assert.That(key_1.KeyValue, Is.Not.Null);
+            Assert.That(key.KeyValue, Is.Not.Null);
         }
 
         [Test]
@@ -25,7 +26,7 @@ namespace AveneoRekrutacja.Tests
         {
             var key = new AuthenticationKey();
 
-            Assert.That(key_1.KeyValue, Is.Not.Empty);
+            Assert.That(key.KeyValue, Is.Not.Empty);
         }
 
         [Test]
@@ -42,7 +43,7 @@ namespace AveneoRekrutacja.Tests
         [TestCase(1000)]
         [TestCase(10000)]
         [TestCase(100000)]
-        [TestCase(1000000)]
+        [TestCase(10000000)]
         public void AuthenticationKey_ShouldCreateAuthenticationKeyObjectsWithUniqueKeyValueAttributeValue(int counter)
         {
             List<string> keyValues = PopulateAuthenticationKeyValuesList(counter);
@@ -68,7 +69,7 @@ namespace AveneoRekrutacja.Tests
             AuthenticationKey key = new();
             string externalKey = key.KeyValue;
 
-            bool actual = key.KeysAreEqual(externalKey);
+            bool actual = key.IsEqualTo(externalKey);
 
             Assert.That(actual, Is.True);
         }
@@ -79,7 +80,7 @@ namespace AveneoRekrutacja.Tests
             AuthenticationKey key = new();
             string externalKey = new AuthenticationKey().KeyValue;
 
-            bool actual = key.KeysAreEqual(externalKey);
+            bool actual = key.IsEqualTo(externalKey);
 
             Assert.That(actual, Is.False);
         }
