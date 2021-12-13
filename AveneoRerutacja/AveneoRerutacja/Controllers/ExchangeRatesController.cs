@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AveneoRerutacja.Dimension;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -19,11 +20,11 @@ namespace AveneoRerutacja.Controllers
         {
             var client = ApiHelper.GetClient();
 
-            if (startDate == null) startDate = "2009-05-06";
-            if (endDate == null) endDate = startDate;
+            DateClass startsOn = new DateClass(startDate);
+            DateClass endsOn = new EndDate(startsOn, endDate);
 
 
-            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, targetCurrency, startDate, endDate, apiKey)))
+            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, targetCurrency, startsOn.GetDateString(), endsOn.GetDateString(), apiKey)))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -31,10 +32,11 @@ namespace AveneoRerutacja.Controllers
                     var dataInJson = JObject.Parse(data);
 
                     var dates = dataInJson["structure"]["dimensions"]["observation"][0]["values"].Select(item => item.First.First).ToList();
+                    var rates = dataInJson["dataSets"][0]["series"]["0:0:0:0:0"]["observations"].Select(item => item.First.First).ToList();
                     Console.WriteLine(dates[0]);
                 }
             }
-            return View();
+            return Ok();
         }
     }
 }
