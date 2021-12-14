@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AveneoRerutacja.Data;
+using AveneoRerutacja.Infrastructure;
+using AveneoRerutacja.KeyGenerator;
 using Microsoft.EntityFrameworkCore;
 
 namespace AveneoRerutacja
@@ -35,8 +37,12 @@ namespace AveneoRerutacja
                 options.UseNpgsql(
                     Configuration.GetConnectionString("NpgsqlExchangeRateConnectionString")));
 
-            services.AddDbContext<KeyGeneratorDbContext>(options =>
+            services.AddDbContext<AuthenticationKeyDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("NpgsqlAuthenticationKeyConnectionString")));
+            
+            //Unoit of Work
+            services.AddTransient<IUnitOfWork<AuthenticationKeyDbContext>, UnitOfWork<AuthenticationKeyDbContext>>();
+            services.AddTransient<IUnitOfWork<ExchangeRatesDbContext>, UnitOfWork<ExchangeRatesDbContext>>();
             
             services.AddSwaggerGen(c =>
             {
