@@ -33,7 +33,10 @@ namespace AveneoRerutacja
 
             services.AddDbContext<ExchangeRatesDbContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("NpgsqlConnectionString")));
+                    Configuration.GetConnectionString("NpgsqlExchangeRateConnectionString")));
+
+            services.AddDbContext<KeyGeneratorDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("NpgsqlAuthenticationKeyConnectionString")));
             
             services.AddSwaggerGen(c =>
             {
