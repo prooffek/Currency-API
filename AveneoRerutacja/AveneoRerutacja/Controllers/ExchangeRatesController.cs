@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AveneoRerutacja.Dimension;
+using AveneoRerutacja.Domain;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -20,23 +22,23 @@ namespace AveneoRerutacja.Controllers
         {
             var client = ApiHelper.GetClient();
 
-            DateClass startsOn = new DateClass(startDate);
+            DateClass startsOn = new StartDate(startDate);
             DateClass endsOn = new EndDate(startsOn, endDate);
-
-
-            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, targetCurrency, startsOn.GetDateString(), endsOn.GetDateString(), apiKey)))
+            
+            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, targetCurrency, startsOn.ToString(), endsOn.ToString(), apiKey)))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    var dataInJson = JObject.Parse(data);
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    IDataGetter dataGetter = new JDataGetter(JObject.Parse(responseString));
 
-                    var dates = dataInJson["structure"]["dimensions"]["observation"][0]["values"].Select(item => item.First.First).ToList();
-                    var rates = dataInJson["dataSets"][0]["series"]["0:0:0:0:0"]["observations"].Select(item => item.First.First).ToList();
-                    Console.WriteLine(dates[0]);
+                    IList<DailyRate> dailyRates = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
+                    
+                    return Ok(dailyRates);
                 }
             }
-            return Ok();
+
+            return Problem("Nothing found");
         }
     }
 }
