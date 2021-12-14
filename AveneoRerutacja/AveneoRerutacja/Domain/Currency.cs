@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AveneoRerutacja.Domain
 {
@@ -9,6 +11,12 @@ namespace AveneoRerutacja.Domain
         public string Code { get; set; }
 
         private readonly int _codeLength;
+        
+        
+        //Setting EntityFramework relations foreign keys
+        public ICollection<DailyRate> DailyRates { get; set; }
+        
+        public Currency() { }
 
         public Currency(string code, string name = null, int codeLength = 3)
         {

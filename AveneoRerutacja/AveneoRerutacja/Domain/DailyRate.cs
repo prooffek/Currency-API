@@ -1,4 +1,5 @@
-﻿using AveneoRerutacja.Dimension;
+﻿using System.Collections.Generic;
+using AveneoRerutacja.Dimension;
 
 namespace AveneoRerutacja.Domain
 {
@@ -9,6 +10,12 @@ namespace AveneoRerutacja.Domain
         public Currency TargetCurrency { get; }
         public DateClass Date { get; }
         public decimal Rate { get; }
+
+        
+        //Setting EntityFramework relations foreign keys
+        public ICollection<Currency> Currencies { get; set; }
+
+        public DailyRate() { }
 
         public DailyRate(string date, decimal rate, string sourceCurrencyCode, string targetCurrencyCode, 
             string sourceCurrencyName = null, string targetCurrencyName = null)
