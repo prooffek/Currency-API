@@ -10,7 +10,7 @@ namespace AveneoRerutacja.Dimension
         public int Id { get; set; }
         public DateTime Date { get; protected init; }
 
-        public DateClass() { }
+        protected DateClass() { }
         
         public DateClass(string date)
         {
@@ -61,7 +61,7 @@ namespace AveneoRerutacja.Dimension
             throw new HttpRequestException("Defined period has not been found", null, HttpStatusCode.NotFound);
         }
 
-        public string GetDateString()
+        public override string ToString()
         {
             return Date.ToString("yyyy-MM-dd");
         }

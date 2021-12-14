@@ -3,11 +3,11 @@ using AveneoRerutacja.Util;
 
 namespace AveneoRerutacja.Dimension
 {
-    public class EndDate : DateClass
+    public sealed class EndDate : DateClass
     {
         private readonly DateClass _startDate;
         
-        public EndDate(DateClass startDate, string date = null) : base()
+        public EndDate(DateClass startDate, string date = null)
         {
             _startDate = startDate;
             Date = ValidateDate(date);
