@@ -14,7 +14,7 @@ namespace AveneoRerutacja.Data
         {
         }
 
-        public ExchangeRatesDbContext(DbContextOptionsBuilder optionsBuilder) => 
-            optionsBuilder.UseNpgsql();
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql();
     }
 }
