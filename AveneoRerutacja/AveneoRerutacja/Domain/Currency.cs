@@ -1,18 +1,20 @@
 ﻿using System;
 
-namespace AveneoRerutacja.Dimension
+namespace AveneoRerutacja.Domain
 {
     public class Currency
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Code { get; set; }
 
         private readonly int _codeLength;
 
-        public Currency(string code, int codeLength = 3)
+        public Currency(string code, string name = null, int codeLength = 3)
         {
             _codeLength = codeLength;
             Code = ValidateCurrencyCode(code);
+            Name = name;
         }
 
         private string ValidateCurrencyCode(string code)
