@@ -8,7 +8,7 @@ namespace AveneoRerutacja.KeyGenerator
     public class AuthenticationKey
     {
         public int Id { get; set; }
-        public string KeyValue { get; }
+        public string KeyValue { get; set; }
 
         public AuthenticationKey()
         {
