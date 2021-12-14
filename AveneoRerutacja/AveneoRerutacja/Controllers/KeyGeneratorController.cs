@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AveneoRerutacja.Data;
+using AveneoRerutacja.Infrastructure;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -12,6 +14,13 @@ namespace AveneoRerutacja.Controllers
     [Route("/[controller]")]
     public class KeyGeneratorController : ControllerBase
     {
+        private readonly IUnitOfWork<AuthenticationKeyDbContext> _uow;
+
+        public KeyGeneratorController(IUnitOfWork<AuthenticationKeyDbContext> uow)
+        {
+            _uow = uow;
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -21,11 +30,20 @@ namespace AveneoRerutacja.Controllers
         {
             AuthenticationKey newKey = new();
 
-            if (newKey == null) throw new NullReferenceException();
-            
             if (string.IsNullOrEmpty(newKey.KeyValue)) throw new NullReferenceException();
 
-            return Ok(new AuthenticationKey().KeyValue);
+            try
+            {
+                await _uow.AuthenticationKeys.Add(newKey);
+                await _uow.Save();
+                
+                return Ok(newKey.KeyValue);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Problem($"Internal server error: {e}");
+            }
         }
     }
 }
