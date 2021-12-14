@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AveneoRerutacja.Migrations
+namespace AveneoRerutacja.Migrations.ExchangeRatesDb
 {
     [DbContext(typeof(ExchangeRatesDbContext))]
-    [Migration("20211214210520_v_01")]
-    partial class v_01
+    [Migration("20211214222843_v_02")]
+    partial class v_02
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

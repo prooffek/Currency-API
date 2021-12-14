@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AveneoRerutacja.Migrations.KeyGeneratorDb
+namespace AveneoRerutacja.Migrations
 {
-    public partial class v_02 : Migration
+    public partial class v_01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,8 @@ namespace AveneoRerutacja.Migrations.KeyGeneratorDb
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    KeyValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

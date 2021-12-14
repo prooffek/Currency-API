@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AveneoRerutacja.Migrations
+namespace AveneoRerutacja.Migrations.ExchangeRatesDb
 {
     [DbContext(typeof(ExchangeRatesDbContext))]
     partial class ExchangeRatesDbContextModelSnapshot : ModelSnapshot

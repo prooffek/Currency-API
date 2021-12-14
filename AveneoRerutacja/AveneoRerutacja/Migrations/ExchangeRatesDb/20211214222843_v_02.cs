@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AveneoRerutacja.Migrations
+namespace AveneoRerutacja.Migrations.ExchangeRatesDb
 {
-    public partial class v_01 : Migration
+    public partial class v_02 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AveneoRerutacja.Migrations.KeyGeneratorDb
+namespace AveneoRerutacja.Migrations
 {
-    [DbContext(typeof(KeyGeneratorDbContext))]
-    [Migration("20211214212906_v_03")]
-    partial class v_03
+    [DbContext(typeof(AuthenticationKeyDbContext))]
+    [Migration("20211214222443_v_01")]
+    partial class v_01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
