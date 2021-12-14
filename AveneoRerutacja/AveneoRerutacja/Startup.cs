@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AveneoRerutacja.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AveneoRerutacja
 {
@@ -28,6 +30,11 @@ namespace AveneoRerutacja
         {
 
             services.AddControllers();
+
+            services.AddDbContext<ExchangeRatesDbContext>(options =>
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("NpgsqlConnectionString")));
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AveneoRerutacja", Version = "v1" });
