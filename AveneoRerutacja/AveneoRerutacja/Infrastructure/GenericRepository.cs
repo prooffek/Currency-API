@@ -27,7 +27,7 @@ namespace AveneoRerutacja.Infrastructure
 
             query = GetIncludes(query, includes);
 
-            return await query.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
 
 
         }
@@ -40,7 +40,7 @@ namespace AveneoRerutacja.Infrastructure
             query = GetByExpression(query, expression);
             query = GetIncludes(query, includes);
 
-            return await query.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
         }
 
         
@@ -52,7 +52,20 @@ namespace AveneoRerutacja.Infrastructure
             query = GetIncludes(query, includes);
             query = GetOrderedQuery(query, orderBy);
 
-            return await query.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
+        }
+
+
+        public async Task<T> Get(Expression<Func<T, bool>> expression = null, List<string> includes = null)
+        {
+            IQueryable<T> query = _db;
+
+            if (includes != null)
+            {
+                includes.Select(include => query = query.Include(include));
+            }
+
+            return await query.FirstOrDefaultAsync(expression);
         }
 
         
