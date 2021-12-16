@@ -10,10 +10,6 @@ namespace AveneoRerutacja.Domain
         public TargetCurrency TargetCurrency { get; }
         public DateClass Date { get; }
         public decimal Rate { get; }
-        
-
-        //Setting EntityFramework relations foreign keys
-        public ICollection<Currency> Currencies { get; set; }
 
         public DailyRate() { }
 
@@ -26,11 +22,11 @@ namespace AveneoRerutacja.Domain
             Rate = rate;
         }
         
-        public DailyRate(DateClass date, decimal rate, SourceCurrency sourceCurrencies, TargetCurrency targetCurrency)
+        public DailyRate(DateClass date, decimal rate, SourceCurrency sourceCurrency, TargetCurrency targetCurrency)
         {
             Date = date;
             Rate = rate;
-            SourceCurrency = sourceCurrencies;
+            SourceCurrency = sourceCurrency;
             TargetCurrency = targetCurrency;
         }
     }

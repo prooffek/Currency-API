@@ -6,7 +6,8 @@ namespace AveneoRerutacja.Data
 {
     public class ExchangeRatesDbContext : DbContext
     {
-        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<SourceCurrency> SourceCurrencies { get; set; }
+        public DbSet<TargetCurrency> TargetCurrencies { get; set; }
         public DbSet<DateClass> Dates { get; set; }
         public DbSet<DailyRate> DailyRates { get; set; }
 

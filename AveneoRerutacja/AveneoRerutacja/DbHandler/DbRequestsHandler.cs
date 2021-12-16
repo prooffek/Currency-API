@@ -42,8 +42,7 @@ namespace AveneoRerutacja.DbHandler
         public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow)
         {
             return await uow.DailyRates.GetAll(rate 
-                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date, 
-                new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
+                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date);
         }
 
         public bool AllDailyRatesInDb()

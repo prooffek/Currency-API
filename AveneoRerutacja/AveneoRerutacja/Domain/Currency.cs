@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AveneoRerutacja.Domain
 {
-    public abstract class Currency
+    public class Currency
     {
         public int Id { get; set; }
         public string Name { get; set; }

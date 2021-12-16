@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using AveneoRerutacja.Data;
 using AveneoRerutacja.Infrastructure;
@@ -43,7 +44,10 @@ namespace AveneoRerutacja
             //Unoit of Work
             services.AddTransient<IUnitOfWork<AuthenticationKeyDbContext>, UnitOfWork<AuthenticationKeyDbContext>>();
             services.AddTransient<IUnitOfWork<ExchangeRatesDbContext>, UnitOfWork<ExchangeRatesDbContext>>();
-            
+
+            //Automapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AveneoRerutacja", Version = "v1" });

@@ -8,11 +8,14 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AutoMapper;
 using AveneoRerutacja.Data;
+using AveneoRerutacja.DbHandler;
 using AveneoRerutacja.Dimension;
 using AveneoRerutacja.Domain;
 using AveneoRerutacja.Infrastructure;
 using AveneoRerutacja.KeyGenerator;
+using AveneoRerutacja.Models;
 using Microsoft.AspNetCore.Authentication;
 
 namespace AveneoRerutacja.Controllers
@@ -23,34 +26,48 @@ namespace AveneoRerutacja.Controllers
     {
         private readonly IUnitOfWork<ExchangeRatesDbContext> _erUnitOfWork;
         private readonly IUnitOfWork<AuthenticationKeyDbContext> _keyUnitOfWork;
+        private readonly IMapper _mapper;
+        private string _startDate;
+        private string _endDate;
 
-        public ExchangeRatesController(IUnitOfWork<ExchangeRatesDbContext> eruow, IUnitOfWork<AuthenticationKeyDbContext> keyuow)
+        public ExchangeRatesController(
+            IUnitOfWork<ExchangeRatesDbContext> eruow, 
+            IUnitOfWork<AuthenticationKeyDbContext> keyuow,
+            IMapper mapper)
         {
             _erUnitOfWork = eruow;
             _keyUnitOfWork = keyuow;
+            _mapper = mapper;
         }
         
         [HttpGet]
-        public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", string startDate = null, string endDate = null, string apiKey = "abscd")
+        public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", 
+            string startsOn = null, string endsOn = null, string apiKey = "abscd")
         {
-            var authenticationKey = await _keyUnitOfWork.AuthenticationKeys.Get(key => key.KeyValue == apiKey);
-            if (authenticationKey == null) return NotFound("Page not found");
+            if (await AuthenticationKey.IsNotValid(_keyUnitOfWork, apiKey)) 
+                return NotFound("Page not found");
+
+            var (startDate, endDate) = DateClass.ValidateDates(startsOn, endsOn);
+            
+            var dbHandler = new DbRequestsHandler(startDate, endDate);
+            dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork);
+            
+            if (dbHandler.AllDailyRatesInDb())
+                return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
             
             var client = ApiHelper.GetClient();
 
-            DateClass startsOn = new StartDate(startDate);
-            DateClass endsOn = new EndDate(startsOn, endDate);
-            
-            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, targetCurrency, startsOn.ToString(), endsOn.ToString(), apiKey)))
+            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, 
+                targetCurrency, startDate.ToString(), endDate.ToString(), apiKey)))
             {
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
                     IDataGetter dataGetter = new JDataGetter(JObject.Parse(responseString));
-
-                    IList<DailyRate> dailyRates = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
-                    
-                    return Ok(dailyRates);
+                    IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
+                    dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
+                
+                    return Ok(_mapper.Map<IList<DailyRateDto>>(result));
                 }
             }
 

@@ -70,5 +70,14 @@ namespace AveneoRerutacja.Dimension
         {
             return Date.ToString("yyyy-MM-dd");
         }
+
+        public static (DateClass, DateClass) ValidateDates(string date1, string date2)
+        {
+            var startDate = new StartDate(date1);
+            var endDate = new EndDate(startDate, date2);
+
+            return (startDate, endDate);
+        }
+            
     }
 }

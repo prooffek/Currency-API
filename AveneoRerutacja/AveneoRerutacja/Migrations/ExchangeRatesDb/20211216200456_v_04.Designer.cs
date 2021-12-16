@@ -3,15 +3,17 @@ using System;
 using AveneoRerutacja.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AveneoRerutacja.Migrations.ExchangeRatesDb
 {
     [DbContext(typeof(ExchangeRatesDbContext))]
-    partial class ExchangeRatesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211216200456_v_04")]
+    partial class v_04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
