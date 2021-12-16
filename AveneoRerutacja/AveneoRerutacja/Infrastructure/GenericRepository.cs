@@ -59,11 +59,8 @@ namespace AveneoRerutacja.Infrastructure
         public async Task<T> Get(Expression<Func<T, bool>> expression = null, List<string> includes = null)
         {
             IQueryable<T> query = _db;
-
-            if (includes != null)
-            {
-                includes.Select(include => query = query.Include(include));
-            }
+            
+            query = GetIncludes(query, includes);
 
             return await query.FirstOrDefaultAsync(expression);
         }
