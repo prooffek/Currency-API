@@ -10,9 +10,16 @@ namespace AveneoRerutacja.ApiHandler
     {
         private static JObject _json;
 
-        public JDataGetter(JObject json)
+        public JDataGetter(string json)
         {
-            _json = json;
+            try
+            {
+                _json = JObject.Parse(json);
+            }
+            catch (Exception e)
+            {
+                _json = null;
+            }
         }
 
         public IList<string> GetData(ResponseKeys key)
