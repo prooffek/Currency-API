@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using AveneoRerutacja.Data;
 using AveneoRerutacja.Infrastructure;
 using AveneoRerutacja.KeyGenerator;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 namespace AveneoRerutacja
@@ -32,7 +33,16 @@ namespace AveneoRerutacja
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(
+                    config =>
+                    {
+                        config.RespectBrowserAcceptHeader = true;
+                        config.ReturnHttpNotAcceptable = true;
+                    })
+                .AddMvcOptions(options =>
+                {
+                    options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                });
 
             services.AddDbContext<ExchangeRatesDbContext>(options =>
                 options.UseNpgsql(
