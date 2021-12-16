@@ -31,7 +31,7 @@ namespace AveneoRerutacja.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", string startDate = null, string endDate = null, string apiKey = "")
+        public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", string startDate = null, string endDate = null, string apiKey = "abscd")
         {
             var authenticationKey = await _keyUnitOfWork.AuthenticationKeys.Get(key => key.KeyValue == apiKey);
             if (authenticationKey == null) return NotFound("Page not found");
