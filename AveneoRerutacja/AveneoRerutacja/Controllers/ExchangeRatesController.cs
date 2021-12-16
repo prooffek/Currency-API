@@ -57,16 +57,18 @@ namespace AveneoRerutacja.Controllers
             
             var client = ApiHelper.GetClient();
 
-            using (HttpResponseMessage response = await client.GetAsync(ApiHelper.SetRequestUrl(sourceCurrency, 
-                targetCurrency, startDate.ToString(), endDate.ToString(), apiKey)))
+            using(HttpResponseMessage response = await client.GetAsync(
+                ApiHelper.SetRequestUrl(
+                    sourceCurrency, targetCurrency, startDate.ToString(), endDate.ToString(), apiKey
+                    )))
             {
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
                     IDataGetter dataGetter = new JDataGetter(JObject.Parse(responseString));
                     IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
-                    dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
-                
+                    await dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
+
                     return Ok(_mapper.Map<IList<DailyRateDto>>(result));
                 }
             }
