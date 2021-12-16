@@ -11,7 +11,7 @@ namespace AveneoRerutacja.DbHandler
 {
     public class DbRequestsHandler
     {
-        private readonly DateClass _startDate;
+        private DateClass _startDate;
         private readonly DateClass _endDate;
         
         public List<DateClass> Period { get; set; }
@@ -41,9 +41,29 @@ namespace AveneoRerutacja.DbHandler
 
         public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow)
         {
-            return await uow.DailyRates.GetAll(rate 
-                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date,
+            IList<DailyRate> days = await uow.DailyRates.GetAll(rate 
+                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date && rate.Rate > 0,
                 new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
+
+            DailyRate workingDay = days.Count > 0 && days.First().Date.Date == _startDate.Date && days?.First().Rate > 0 ? 
+                null : await FindNearestWorkingDay(uow);
+            
+            if (workingDay != null) days.Add(workingDay);
+
+            return days;
+        }
+
+        private async Task<DailyRate> FindNearestWorkingDay(IUnitOfWork<ExchangeRatesDbContext> uow)
+        {
+            DailyRate day;
+            do
+            {
+                _startDate.SetToPreviousDay();
+                day = await uow.DailyRates.Get(rate => rate.Date.Date == _startDate.Date.Date,
+                    new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
+            } while (day?.Rate == -1);
+
+            return day;
         }
 
         public bool AllDailyRatesInDb()
