@@ -42,7 +42,8 @@ namespace AveneoRerutacja.DbHandler
         public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow)
         {
             return await uow.DailyRates.GetAll(rate 
-                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date);
+                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date,
+                new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
         }
 
         public bool AllDailyRatesInDb()
@@ -50,34 +51,18 @@ namespace AveneoRerutacja.DbHandler
             return DailyRates.Count == Period.Count;
         }
 
-        public async void AddDailyRatesToDb(IList<DailyRate> apiResult, IUnitOfWork<ExchangeRatesDbContext> uow)
+        public async Task AddDailyRatesToDb(IList<DailyRate> apiResult, IUnitOfWork<ExchangeRatesDbContext> uow)
         {
-            try
-            {
-                var missingEntities = GetMissingEntities(apiResult);
-                await uow.DailyRates.AddRange(missingEntities);
-                await uow.Save();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var missingEntities = GetMissingEntities(apiResult);
+            await uow.DailyRates.AddRange(missingEntities);
+            await uow.Save();
         }
 
         private IList<DailyRate> GetMissingEntities(IList<DailyRate> apiResult)
         {
             List<DailyRate> entitiesMissingFromDb = new List<DailyRate>();
             entitiesMissingFromDb.AddRange(GetDailyRatesMissingFromDb(apiResult, entitiesMissingFromDb));
-            
-
-            foreach (var day in Period)
-            {
-                if (apiResult.Where(dr => dr.Date.Date == day.Date).ToList().Count <= 0)
-                {
-                    entitiesMissingFromDb.Add(new DailyRate(day, -1, apiResult.First().SourceCurrency, apiResult.First().TargetCurrency));
-                }
-            }
+            entitiesMissingFromDb.AddRange(GetHolidayWeekDays(apiResult, entitiesMissingFromDb));
 
             return entitiesMissingFromDb;
         }
