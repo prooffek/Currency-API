@@ -49,31 +49,20 @@ namespace AveneoRerutacja.Controllers
 
             var (startDate, endDate) = DateClass.ValidateDates(startsOn, endsOn);
             
-            var dbHandler = new DbRequestsHandler(startDate, endDate);
+            var dbHandler = new DbRequestsHandler(startDate.Copy(), endDate.Copy());
             dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork);
             
             if (dbHandler.AllDailyRatesInDb())
                 return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
-            
-            var client = ApiHelper.GetClient();
 
-            using(HttpResponseMessage response = await client.GetAsync(
-                ApiHelper.SetRequestUrl(
-                    sourceCurrency, targetCurrency, startDate.ToString(), endDate.ToString(), apiKey
-                    )))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    IDataGetter dataGetter = new JDataGetter(JObject.Parse(responseString));
-                    IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
-                    await dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
+            string responseString = await ApiHelper.GetResponseString(sourceCurrency, targetCurrency, startDate.Copy(),
+                endDate.Copy(), apiKey);
 
-                    return Ok(_mapper.Map<IList<DailyRateDto>>(result));
-                }
-            }
+            IDataGetter dataGetter = new JDataGetter(responseString);
+            IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
+            await dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
 
-            return Problem("Nothing found");
+            return Ok(_mapper.Map<IList<DailyRateDto>>(result));
         }
     }
 }
