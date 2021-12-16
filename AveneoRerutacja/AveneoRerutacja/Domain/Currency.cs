@@ -1,18 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace AveneoRerutacja.Dimension
+namespace AveneoRerutacja.Domain
 {
-    public class Currency
+    public abstract class Currency
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Code { get; set; }
 
         private readonly int _codeLength;
+        
+        
+        //Setting EntityFramework relations foreign keys
+        public ICollection<DailyRate> DailyRates { get; set; }
 
-        public Currency(string code, int codeLength = 3)
+        protected Currency() { }
+        
+        protected Currency(string code, string name = null, int codeLength = 3)
         {
             _codeLength = codeLength;
             Code = ValidateCurrencyCode(code);
+            Name = name;
         }
 
         private string ValidateCurrencyCode(string code)
