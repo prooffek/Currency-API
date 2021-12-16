@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using AveneoRerutacja.Domain;
 
 namespace AveneoRerutacja.Dimension
 {
@@ -10,6 +11,10 @@ namespace AveneoRerutacja.Dimension
         public int Id { get; set; }
         public DateTime Date { get; protected init; }
 
+        
+        //Setting EntityFramework relations foreign keys
+        public ICollection<DailyRate> DailyRates { get; set; }
+        
         protected DateClass() { }
         
         public DateClass(string date)
