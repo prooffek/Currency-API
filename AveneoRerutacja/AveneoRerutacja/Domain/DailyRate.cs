@@ -25,5 +25,13 @@ namespace AveneoRerutacja.Domain
             Date = new DateClass(date);
             Rate = rate;
         }
+        
+        public DailyRate(DateClass date, decimal rate, SourceCurrency sourceCurrencies, TargetCurrency targetCurrency)
+        {
+            Date = date;
+            Rate = rate;
+            SourceCurrency = sourceCurrencies;
+            TargetCurrency = targetCurrency;
+        }
     }
 }
