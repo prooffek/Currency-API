@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using AveneoRerutacja.Domain;
 
 namespace AveneoRerutacja.Dimension
 {
