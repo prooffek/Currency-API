@@ -8,18 +8,34 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AveneoRerutacja.Data;
 using AveneoRerutacja.Dimension;
 using AveneoRerutacja.Domain;
+using AveneoRerutacja.Infrastructure;
+using AveneoRerutacja.KeyGenerator;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AveneoRerutacja.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ExchangeRatesController : Controller
+    public class ExchangeRatesController : ControllerBase
     {
+        private readonly IUnitOfWork<ExchangeRatesDbContext> _erUnitOfWork;
+        private readonly IUnitOfWork<AuthenticationKeyDbContext> _keyUnitOfWork;
+
+        public ExchangeRatesController(IUnitOfWork<ExchangeRatesDbContext> eruow, IUnitOfWork<AuthenticationKeyDbContext> keyuow)
+        {
+            _erUnitOfWork = eruow;
+            _keyUnitOfWork = keyuow;
+        }
+        
         [HttpGet]
         public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", string startDate = null, string endDate = null, string apiKey = "")
         {
+            var authenticationKey = await _keyUnitOfWork.AuthenticationKeys.Get(key => key.KeyValue == apiKey);
+            if (authenticationKey == null) return NotFound("Page not found");
+            
             var client = ApiHelper.GetClient();
 
             DateClass startsOn = new StartDate(startDate);

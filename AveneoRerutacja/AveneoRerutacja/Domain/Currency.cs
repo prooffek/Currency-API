@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AveneoRerutacja.Domain
 {
-    public class Currency
+    public abstract class Currency
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,10 +14,10 @@ namespace AveneoRerutacja.Domain
         
         //Setting EntityFramework relations foreign keys
         public ICollection<DailyRate> DailyRates { get; set; }
-        
-        public Currency() { }
 
-        public Currency(string code, string name = null, int codeLength = 3)
+        protected Currency() { }
+        
+        protected Currency(string code, string name = null, int codeLength = 3)
         {
             _codeLength = codeLength;
             Code = ValidateCurrencyCode(code);
