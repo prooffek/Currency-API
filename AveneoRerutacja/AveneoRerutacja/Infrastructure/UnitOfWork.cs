@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AveneoRerutacja.Dimension;
 using AveneoRerutacja.Domain;
 using AveneoRerutacja.KeyGenerator;
@@ -24,6 +25,12 @@ namespace AveneoRerutacja.Infrastructure
         public IGenericRepository<AuthenticationKey> AuthenticationKeys =>
             new GenericRepository<AuthenticationKey>(_context);
 
+        public void Dispose()
+        {
+            _context.Dispose();
+            GC.SuppressFinalize(true);
+        }
+        
         public async Task Save()
         {
             await _context.SaveChangesAsync();
