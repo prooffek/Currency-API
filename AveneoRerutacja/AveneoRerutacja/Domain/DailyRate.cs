@@ -6,10 +6,10 @@ namespace AveneoRerutacja.Domain
     public class DailyRate
     {
         public int Id { get; set; }
-        public SourceCurrency SourceCurrency { get; }
-        public TargetCurrency TargetCurrency { get; }
-        public DateClass Date { get; }
-        public decimal Rate { get; }
+        public SourceCurrency SourceCurrency { get; set; }
+        public TargetCurrency TargetCurrency { get; set; }
+        public DateClass Date { get; set; }
+        public decimal Rate { get; set; }
 
         public DailyRate() { }
 
