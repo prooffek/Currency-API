@@ -85,7 +85,10 @@ namespace AveneoRerutacja.Infrastructure
         {
             if (includes != null)
             {
-                includes.Select(include => query = query.Include(include));
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
             }
 
             return query;
