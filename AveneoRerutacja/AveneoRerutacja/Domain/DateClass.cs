@@ -9,7 +9,7 @@ namespace AveneoRerutacja.Dimension
     public class DateClass
     {
         public int Id { get; set; }
-        public DateTime Date { get; protected init; }
+        public DateTime Date { get; protected set; }
         
         
         //Setting EntityFramework relations foreign keys
@@ -78,6 +78,15 @@ namespace AveneoRerutacja.Dimension
 
             return (startDate, endDate);
         }
-            
+
+        public void SetToPreviousDay()
+        {
+            Date = Date.AddDays(-1);
+        }
+
+        public DateClass Copy()
+        {
+            return new DateClass(Date.ToString());
+        }
     }
 }
