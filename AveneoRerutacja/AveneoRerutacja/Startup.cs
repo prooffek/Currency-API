@@ -33,6 +33,7 @@ namespace AveneoRerutacja
         {
 
             services.AddControllers();
+<<<<<<< HEAD
 
             services.AddDbContext<ExchangeRatesDbContext>(options =>
                 options.UseNpgsql(
@@ -48,6 +49,12 @@ namespace AveneoRerutacja
             //Automapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+=======
+            
+            //Automapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            
+>>>>>>> Automapper
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AveneoRerutacja", Version = "v1" });
