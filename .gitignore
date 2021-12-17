@@ -364,3 +364,4 @@ FodyWeavers.xsd
 AveneoRerutacja/.idea/.idea.AveneoRerutacja/.idea/.gitignore
 AveneoRerutacja/.idea/.idea.AveneoRerutacja/.idea/encodings.xml
 AveneoRerutacja/.idea/
+AveneoRerutacja/AveneoRerutacja/Migrations/20211217143426_v_01.cs
