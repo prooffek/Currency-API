@@ -26,6 +26,7 @@ namespace AveneoRerutacja.ApiHandler
             return (IList<string>)ResponseData[key].DynamicInvoke();
         }
 
+        //Dictionary like the one below allows for easy extension and modifications depending on the actual needs
         public Dictionary<ResponseKeys, Delegate> ResponseData { get; } = new()
         {
             {

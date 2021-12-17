@@ -43,6 +43,9 @@ namespace AveneoRerutacja.ApiHandler
         {
             GetClient();
             string responseString = null;
+            
+            //Counter prevents infinite loops when, e.g., the currencies like Euro were not used
+            //in the requested period yet
             int counter = 20;
 
             do

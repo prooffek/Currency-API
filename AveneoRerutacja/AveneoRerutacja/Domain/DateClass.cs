@@ -86,7 +86,7 @@ namespace AveneoRerutacja.Dimension
 
         public DateClass Copy()
         {
-            return new DateClass(Date.ToString());
+            return new DateClass(Date.ToString("yyyy-MM-dd"));
         }
     }
 }

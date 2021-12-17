@@ -1,0 +1,39 @@
+﻿Ze względu na wymagania aplikacji postanowiłem na następujące rozwiązania:
+
+1.	Połączenie z Api zewnętrznym nawiązywane jest za pomocą klasy statycznej, w celu uniknięcia tworzenia wielu 
+    instancji takiego połączenia. Singleton wydał mi się mniej odpowiedni w tym wypadku, ze względu na jego „długie życie”.
+    
+2.	Zastosowanie interface’u IDataGetter umożliwia wykorzystanie różnych sposobów wybierania potrzebnych danych z 
+    odpowiedzi z zewnętrznego API, w tym wykorzystania różnych technologii.
+    
+3.	Przy połączeniu z bazą danych wykorzystuję ORM Entity Framework Core implementując również podejście code-first. 
+
+    a.	W celu utrzymania uniwersalności kodu, wykorzystuję generyczny interface UnitOfWork, dzięki któremu tworzone 
+        jest połączenie z dwoma bazami danych (jedną przechowującą historię zapytań do zewnętrznego Api i jedną z 
+        wygenerowanymi kluczami dostępu – apiKey).
+        
+    b.	Dane przechowywane są w różnych bazach danych ze względów bezpieczeństwa.
+    
+    c.	W tym samym celu wykorzystuję generyczny interface GenericRepository, w którym zdefiniowane są funkcje 
+        pobierania i dodawania danych do bazy. W projekcie, ze względu na jego charakter, ograniczyłem się tylko do 
+        tego typu operacji.
+        
+    d.	Rozdzieliłem Domenę (Domain) od Modelu, w celu uniknięcia wielopoziomowych zagnieżdżeń danych w obiektach 
+        „wyrzuconych” z bazy danych. Z tego względu Controller zawsze zwraca zmapowany obiekt Dto. Podejście takie 
+        daje tez dużą swobodę w ograniczaniu i kontrolowaniu informacji wysyłanych na zewnątrz aplikacji.
+        
+    e.	Baza zawierająca wyniki zapytań do bazy danych składa się z 4 tabel:
+        i.	SourceCurrencies – przechowujące walutę początkową,
+        ii.	TargetCurrencies – przechowującą walutę docelową,
+        iii.	DateClasses (nazwa wymuszona ze względu na parametr Date) – przechowuje informacje o datach z zapytań,
+        iv.	DailyRates – przechowuje referencje (Id) do wierszy z pozostałych tabel jak również wartość wymiany.
+        
+    f.	 W bazie danych przechowywane są:
+        i.	 dni robocze (od poniedziałku do piątku),
+        ii.	dni świąteczne w tygodniu (np. wolne piątki), którym do własności „Rate” przypisywana jest wartość -1.
+        iii.	dzięki temu, możliwe jest wyszukanie w bazie danych (bez konieczności ponownego pytania Api zewnętrznego) 
+        dni, z których owo Api nie posiada danych.
+        
+4.	Do logowania wykorzystano Serilog, ze względu na jego popularność i łatwość dostępu. Logi zapisywane są w folderze 
+    logs wewnątrz projektu, ze względu na jego „testowy” charakter. W rzeczywistej aplikacji zapisywałbym dane w innym 
+    miejscu.

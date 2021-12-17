@@ -11,6 +11,7 @@ using AveneoRerutacja.Domain;
 using AveneoRerutacja.Infrastructure;
 using AveneoRerutacja.KeyGenerator;
 using AveneoRerutacja.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -32,7 +33,12 @@ namespace AveneoRerutacja.Controllers
             _mapper = mapper;
         }
         
+        //HttpPost allows retrieving dictionary values from the url parameters
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetRates([FromQuery] Dictionary<string, string> currencyCodes, 
             string startsOn, string endsOn, string apiKey)
         {
@@ -66,6 +72,9 @@ namespace AveneoRerutacja.Controllers
             }
             
             return NotFound("Page not found");
+            
+            //Status "NotFound" is returned independently of the exception, to hide data from the client/receiver.
+            //More detailed info is printed in the console and logged in txt files
         }
     }
 }

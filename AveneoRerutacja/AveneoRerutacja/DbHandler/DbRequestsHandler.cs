@@ -41,10 +41,14 @@ namespace AveneoRerutacja.DbHandler
 
         public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow)
         {
+            //Get days of the given period saved in the db
             IList<DailyRate> days = await uow.DailyRates.GetAll(rate 
                     => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date && rate.Rate > 0,
                 new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
-
+            
+            //Checks whether the first day in the list was not a holiday
+            //If the day was a holiday, checks the previous day(s)
+            //Db keeps holidays by assigning rate = -1
             DailyRate workingDay = days.Count > 0 && days.First().Date.Date == _startDate.Date && days?.First().Rate > 0 ? 
                 null : await FindNearestWorkingDay(uow);
             
@@ -55,6 +59,7 @@ namespace AveneoRerutacja.DbHandler
 
         private async Task<DailyRate> FindNearestWorkingDay(IUnitOfWork<ExchangeRatesDbContext> uow)
         {
+            //Rate == -1 means that the day was a holiday
             DailyRate day;
             do
             {
@@ -86,7 +91,7 @@ namespace AveneoRerutacja.DbHandler
 
             return entitiesMissingFromDb;
         }
-
+        
         private IList<DailyRate> GetDailyRatesMissingFromDb(IList<DailyRate> apiResult, IList<DailyRate> missingEntities)
         {
             foreach (var day in apiResult)
@@ -98,6 +103,9 @@ namespace AveneoRerutacja.DbHandler
             return missingEntities;
         }
 
+        //The method draws on the fact that external Api does not return holidays
+        //so if a date is missing from the response and it is neither Saturday nor Sunday
+        //The bank was close on this day
         private IList<DailyRate> GetHolidayWeekDays(IList<DailyRate> apiResult, IList<DailyRate> missingEntities)
         {
             foreach (var day in Period)
