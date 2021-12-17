@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using AveneoRerutacja.Domain;
+using AveneoRerutacja.Dimension;
 
-namespace AveneoRerutacja.Dimension
+namespace AveneoRerutacja.Domain
 {
     public class DateClass
     {

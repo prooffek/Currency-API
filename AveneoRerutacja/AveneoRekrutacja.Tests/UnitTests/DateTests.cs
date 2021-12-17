@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using AveneoRerutacja.Dimension;
+using AveneoRerutacja.Domain;
 using NUnit.Framework;
 
 namespace AveneoRekrutacja.Tests

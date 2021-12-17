@@ -1,4 +1,6 @@
-﻿namespace AveneoRerutacja.Dimension
+﻿using AveneoRerutacja.Domain;
+
+namespace AveneoRerutacja.Dimension
 {
     public sealed class StartDate : DateClass
     {

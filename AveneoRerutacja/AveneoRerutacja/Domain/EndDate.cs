@@ -1,4 +1,5 @@
 ﻿using System;
+using AveneoRerutacja.Domain;
 
 namespace AveneoRerutacja.Dimension
 {

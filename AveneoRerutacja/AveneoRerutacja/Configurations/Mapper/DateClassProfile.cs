@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AveneoRerutacja.Dimension;
+using AveneoRerutacja.Domain;
 using AveneoRerutacja.Models;
 
 namespace AveneoRerutacja.Configurations.Mapper
