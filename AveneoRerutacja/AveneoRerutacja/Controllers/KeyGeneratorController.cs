@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using AveneoRerutacja.Data;
 using AveneoRerutacja.Infrastructure;
+using AveneoRerutacja.Models;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -13,10 +15,12 @@ namespace AveneoRerutacja.Controllers
     public class KeyGeneratorController : ControllerBase
     {
         private readonly IUnitOfWork<AuthenticationKeyDbContext> _uow;
+        private readonly IMapper _mapper;
 
-        public KeyGeneratorController(IUnitOfWork<AuthenticationKeyDbContext> uow)
+        public KeyGeneratorController(IUnitOfWork<AuthenticationKeyDbContext> uow, IMapper mapper)
         {
             _uow = uow;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -35,7 +39,7 @@ namespace AveneoRerutacja.Controllers
                 await _uow.AuthenticationKeys.Add(newKey);
                 await _uow.Save();
                 
-                return Ok(newKey.KeyValue);
+                return Ok(_mapper.Map<AuthenticationKeyDto>(newKey));
             }
             catch (Exception e)
             {
