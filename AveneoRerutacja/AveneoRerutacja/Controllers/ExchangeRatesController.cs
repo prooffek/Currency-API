@@ -17,6 +17,7 @@ using AveneoRerutacja.Infrastructure;
 using AveneoRerutacja.KeyGenerator;
 using AveneoRerutacja.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Routing;
 
 namespace AveneoRerutacja.Controllers
 {
@@ -38,11 +39,11 @@ namespace AveneoRerutacja.Controllers
             _mapper = mapper;
         }
         
-        [HttpGet]
-        public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", 
-            string startsOn = null, string endsOn = null, string apiKey = "abscd")
+        [HttpPost]
+        public async Task<ActionResult> GetRates([FromQuery] Dictionary<string, string> currencyCodes, 
+            string startsOn, string endsOn, string apiKey)
         {
-            if (!await AuthenticationKey.IsNotValid(_keyUnitOfWork, apiKey))
+            if (await AuthenticationKey.IsValid(_keyUnitOfWork, apiKey))
             {
                 try
                 {
@@ -54,7 +55,7 @@ namespace AveneoRerutacja.Controllers
                     if (dbHandler.AllDailyRatesInDb())
                         return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
 
-                    string responseString = await ApiHelper.GetResponseString(sourceCurrency, targetCurrency,
+                    string responseString = await ApiHelper.GetResponseString(currencyCodes,
                         startDate.Copy(),
                         endDate.Copy(), apiKey);
 
