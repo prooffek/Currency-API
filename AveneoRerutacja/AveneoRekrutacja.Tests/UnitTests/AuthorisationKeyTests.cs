@@ -62,27 +62,5 @@ namespace AveneoRekrutacja.Tests
 
             return keyValues;
         }
-
-        [Test]
-        public void AuthenticationKey_ShouldReturnTrueIfKeyValuesAreIdentical()
-        {
-            AuthenticationKey key = new();
-            string externalKey = key.KeyValue;
-
-            bool actual = key.IsEqualTo(externalKey);
-
-            Assert.That(actual, Is.True);
-        }
-
-        [Test]
-        public void AuthenticationKey_ShouldReturnFalseIfKeyValuesAreNotIdentical()
-        {
-            AuthenticationKey key = new();
-            string externalKey = new AuthenticationKey().KeyValue;
-
-            bool actual = key.IsEqualTo(externalKey);
-
-            Assert.That(actual, Is.False);
-        }
     }
 }
