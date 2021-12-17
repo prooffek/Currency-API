@@ -27,8 +27,6 @@ namespace AveneoRerutacja.Controllers
         private readonly IUnitOfWork<ExchangeRatesDbContext> _erUnitOfWork;
         private readonly IUnitOfWork<AuthenticationKeyDbContext> _keyUnitOfWork;
         private readonly IMapper _mapper;
-        private string _startDate;
-        private string _endDate;
 
         public ExchangeRatesController(
             IUnitOfWork<ExchangeRatesDbContext> eruow, 
@@ -44,25 +42,36 @@ namespace AveneoRerutacja.Controllers
         public async Task<ActionResult> GetRates(string sourceCurrency = "USD", string targetCurrency = "EUR", 
             string startsOn = null, string endsOn = null, string apiKey = "abscd")
         {
-            if (await AuthenticationKey.IsNotValid(_keyUnitOfWork, apiKey)) 
-                return NotFound("Page not found");
+            if (!await AuthenticationKey.IsNotValid(_keyUnitOfWork, apiKey))
+            {
+                try
+                {
+                    var (startDate, endDate) = DateClass.ValidateDates(startsOn, endsOn);
 
-            var (startDate, endDate) = DateClass.ValidateDates(startsOn, endsOn);
+                    var dbHandler = new DbRequestsHandler(startDate.Copy(), endDate.Copy());
+                    dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork);
+
+                    if (dbHandler.AllDailyRatesInDb())
+                        return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
+
+                    string responseString = await ApiHelper.GetResponseString(sourceCurrency, targetCurrency,
+                        startDate.Copy(),
+                        endDate.Copy(), apiKey);
+
+                    IDataGetter dataGetter = new JDataGetter(responseString);
+                    IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
+                    await dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
+
+                    return Ok(_mapper.Map<IList<DailyRateDto>>(result));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return NotFound("Page not found");
+                }
+            }
             
-            var dbHandler = new DbRequestsHandler(startDate.Copy(), endDate.Copy());
-            dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork);
-            
-            if (dbHandler.AllDailyRatesInDb())
-                return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
-
-            string responseString = await ApiHelper.GetResponseString(sourceCurrency, targetCurrency, startDate.Copy(),
-                endDate.Copy(), apiKey);
-
-            IDataGetter dataGetter = new JDataGetter(responseString);
-            IList<DailyRate> result = new ApiResponseHandler<IDataGetter>(dataGetter).GetDailyRates();
-            await dbHandler.AddDailyRatesToDb(result, _erUnitOfWork);
-
-            return Ok(_mapper.Map<IList<DailyRateDto>>(result));
+            return NotFound("Page not found");
         }
     }
 }
