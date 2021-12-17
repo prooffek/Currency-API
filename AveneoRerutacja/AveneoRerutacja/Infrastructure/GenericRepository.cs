@@ -28,8 +28,6 @@ namespace AveneoRerutacja.Infrastructure
             query = GetIncludes(query, includes);
 
             return await query.ToListAsync();
-
-
         }
 
         
