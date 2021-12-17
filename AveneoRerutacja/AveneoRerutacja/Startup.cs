@@ -41,7 +41,7 @@ namespace AveneoRerutacja
             services.AddDbContext<AuthenticationKeyDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("NpgsqlAuthenticationKeyConnectionString")));
             
-            //Unoit of Work
+            //Unit of Work
             services.AddTransient<IUnitOfWork<AuthenticationKeyDbContext>, UnitOfWork<AuthenticationKeyDbContext>>();
             services.AddTransient<IUnitOfWork<ExchangeRatesDbContext>, UnitOfWork<ExchangeRatesDbContext>>();
 
