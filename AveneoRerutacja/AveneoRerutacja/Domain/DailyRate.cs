@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AveneoRerutacja.Dimension;
+﻿using AveneoRerutacja.Dimension;
 
 namespace AveneoRerutacja.Domain
 {

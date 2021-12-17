@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using AveneoRerutacja.Domain;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AveneoRerutacja.Models
 {

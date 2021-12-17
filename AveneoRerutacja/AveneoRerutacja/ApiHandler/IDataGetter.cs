@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AveneoRerutacja.Dimension;
-using Newtonsoft.Json.Linq;
 
 namespace AveneoRerutacja.ApiHandler
 {

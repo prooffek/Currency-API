@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using AveneoRerutacja.Dimension;
 using AveneoRerutacja.Domain;
-using Newtonsoft.Json.Linq;
 
 namespace AveneoRerutacja.ApiHandler
 {

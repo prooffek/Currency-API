@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using AveneoRerutacja.Dimension;
-using AveneoRerutacja.Domain;
-using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AveneoRerutacja.Models
 {

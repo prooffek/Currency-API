@@ -1,12 +1,7 @@
 ﻿using AveneoRerutacja.ApiHandler;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using AveneoRerutacja.Data;
@@ -16,8 +11,6 @@ using AveneoRerutacja.Domain;
 using AveneoRerutacja.Infrastructure;
 using AveneoRerutacja.KeyGenerator;
 using AveneoRerutacja.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Routing;
 
 namespace AveneoRerutacja.Controllers
 {
