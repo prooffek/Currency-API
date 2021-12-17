@@ -23,10 +23,10 @@ namespace AveneoRerutacja.KeyGenerator
         }
 
 
-        public static async Task<bool> IsNotValid(IUnitOfWork<AuthenticationKeyDbContext> uow, string apiKey)
+        public static async Task<bool> IsValid(IUnitOfWork<AuthenticationKeyDbContext> uow, string apiKey)
         {
             var authenticationKey = await uow.AuthenticationKeys.Get(key => key.KeyValue == apiKey);
-            return authenticationKey == null;
+            return authenticationKey != null;
         }
     }
 }
