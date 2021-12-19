@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AveneoRerutacja.Data;
 using AveneoRerutacja.Dimension;
@@ -39,11 +40,15 @@ namespace AveneoRerutacja.DbHandler
             Period = temporaryList;
         }
 
-        public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow)
+        public async Task<IList<DailyRate>> SetDailyRates(IUnitOfWork<ExchangeRatesDbContext> uow, 
+            Dictionary<string, string> currencyCodes)
         {
+            var sourceCurrencyCode = currencyCodes.Keys.First();
+            var targetCurrencyCode = currencyCodes[sourceCurrencyCode];
+            
             //Get days of the given period saved in the db
-            IList<DailyRate> days = await uow.DailyRates.GetAll(rate 
-                    => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date && rate.Rate > 0,
+            IList<DailyRate> days = await uow.DailyRates.GetAll(
+                RateIsInDb(sourceCurrencyCode, targetCurrencyCode),
                 new List<string>() {"SourceCurrency", "TargetCurrency", "Date"});
             
             //Checks whether the first day in the list was not a holiday
@@ -55,6 +60,13 @@ namespace AveneoRerutacja.DbHandler
             if (workingDay != null) days.Add(workingDay);
 
             return days;
+        }
+
+        private Expression<Func<DailyRate, bool>> RateIsInDb(string sourceCurrencyCode, string targetCurrencyCode)
+        {
+            return rate => rate.Date.Date >= Period.First().Date.Date && rate.Date.Date <= Period.Last().Date.Date &&
+                   rate.Rate > 0 && rate.SourceCurrency.Code == sourceCurrencyCode &&
+                   rate.TargetCurrency.Code == targetCurrencyCode;
         }
 
         private async Task<DailyRate> FindNearestWorkingDay(IUnitOfWork<ExchangeRatesDbContext> uow)

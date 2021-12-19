@@ -49,7 +49,7 @@ namespace AveneoRerutacja.Controllers
                     var (startDate, endDate) = DateClass.ValidateDates(startsOn, endsOn);
 
                     var dbHandler = new DbRequestsHandler(startDate.Copy(), endDate.Copy());
-                    dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork);
+                    dbHandler.DailyRates = await dbHandler.SetDailyRates(_erUnitOfWork, currencyCodes);
 
                     if (dbHandler.AllDailyRatesInDb())
                         return Ok(_mapper.Map<IList<DailyRateDto>>(dbHandler.DailyRates));
