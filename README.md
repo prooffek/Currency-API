@@ -1,7 +1,3 @@
-# aveneo---rekrutacja
-
-Zadanie
-
 Zadanie polega na stworzeniu REST-owego API dostarczającego kursy walut w kontekście daty.
 API powinno być zabezpieczone unikalnym kluczem przechowywanym lokalnie. Jego generowanie
 powinno być możliwe korzystając z dodatkowego end-pointa. Każde odpytanie API powinno być
